@@ -1,5 +1,13 @@
+import OutputView from './OutputView.js';
+
 class App {
-  play() {}
+  play() {
+    OutputView.printStart();
+  }
 }
 
-module.exports = App;
+const app = new App();
+
+app.play();
+
+export default App;
