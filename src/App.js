@@ -23,7 +23,17 @@ class App {
   }
 
   #getMoving() {
-    console.log('실행대따?');
+    InputView.readMoving(this.#validateMoving.bind(this));
+  }
+
+  #validateMoving(moving) {
+    try {
+      Validator.validateMoving(moving);
+      console.log(moving, "success?")
+    } catch (error) {
+      OutputView.printError(error.message);
+      return this.#getMoving();
+    }
   }
 }
 
