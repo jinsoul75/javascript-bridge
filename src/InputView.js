@@ -7,19 +7,17 @@ const InputView = {
   /**
    * 다리의 길이를 입력받는다.
    */
-  readBridgeSize(callback) {
-    Console.readLine('\n다리의 길이를 입력해주세요.\n', answer => {
-      callback(answer);
-    });
+  async readBridgeSize() {
+    const answer = await Console.readLineAsync('\n다리의 길이를 입력해주세요.\n');
+    return answer;
   },
 
   /**
    * 사용자가 이동할 칸을 입력받는다.
    */
-  readMoving(callback) {
-    Console.readLine('\n이동할 칸을 선택해주세요. (위: U, 아래: D)\n', answer => {
-      callback(answer);
-    });
+  async readMoving() {
+    const answer = await Console.readLineAsync('\n이동할 칸을 선택해주세요. (위: U, 아래: D)\n');
+    return answer;
   },
 
   /**

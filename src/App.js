@@ -4,87 +4,62 @@ import Validator from './Validator.js';
 import BridgeGame from './BridgeGame.js';
 
 class App {
-  #size;
-
-  #moving;
-
   #bridgeGame;
 
-  play() {
+  async play() {
     OutputView.printStart();
-    this.#getBridgeSize();
+
+    const size = await this.retryHandler(() => this.#getBridgeSize());
+
+    // const [result, isSuccess, attemptNumber]   =
+    await this.#crossBridge(size);
+
+    // OutputView.printResult(result, isSuccess, attemptNumber);
   }
 
-  #getBridgeSize() {
-    InputView.readBridgeSize(this.#validateBridgeSize.bind(this));
-  }
+  async #crossBridge() {
+    // 다리의 길이만큼 시도했다면 result Return
+    // result가 X라면 InputView Return
+    while (!this.#bridgeGame.isDone()) {
+      const moving = await this.#getMoving();
 
-  #validateBridgeSize(bridgeSize) {
-    try {
-      Validator.validateBridgeSize(bridgeSize);
-      this.#size = bridgeSize;
-      this.#bridgeGame = new BridgeGame(bridgeSize);
-      return this.#getMoving();
-    } catch (error) {
-      OutputView.printError(error.message);
-      return this.#getBridgeSize();
+      this.#bridgeGame.move(moving);
+
+      OutputView.printMap(this.#bridgeGame.getResult());
     }
   }
 
-  #getMoving() {
-    InputView.readMoving(this.#validateMoving.bind(this));
-  }
-
-  #getMovingAgain() {
-    InputView.readMoving(this.#validateMovingAgain.bind(this));
-  }
-
-  #validateMoving(moving) {
+  async retryHandler(callback) {
     try {
-      Validator.validateMoving(moving);
-      this.#moving = moving;
-      return this.#moveBridge();
+      return await callback();
     } catch (error) {
       OutputView.printError(error.message);
-      return this.#getMoving();
+      return this.retryHandler(callback);
     }
   }
 
-  #validateMovingAgain(moving) {
-    try {
-      Validator.validateMoving(moving);
-      this.#moving = moving;
-    } catch (error) {
-      OutputView.printError(error.message);
-      return this.#getMoving();
-    }
+  async #getBridgeSize() {
+    const bridgeSize = await InputView.readBridgeSize();
+
+    Validator.validateBridgeSize(bridgeSize);
+
+    this.#bridgeGame = new BridgeGame(bridgeSize);
+
+    return bridgeSize;
   }
 
+  async #getMoving() {
+    const moving = await InputView.readMoving();
+
+    Validator.validateMoving(moving);
+
+    return moving;
+  }
   // 일단 다리 길이 만큼 반복
   // 종료 전 map 먼저 print
   // 실패하는 경우 :  움직일 수 없는 방향 입력시
   // 결과값 나오는 경우: 다리 길이만큼이 되었을 때
-
-  #moveBridge() {
-    let position = 0;
-
-    while (position < this.#size) {
-      const result = this.#bridgeGame.move(this.#moving, position);
-      OutputView.printMap(result);
-      position += 1;
-      this.#getMovingAgain();
-    }
-
-    this.#getResult();
-  }
-
-  #askContinue() {
-    console.log('계속할꺼냐?');
-  }
-
-  #getResult(result, retry) {
-    console.log(result, retry);
-  }
+  // 게임 진행상황은 어디서 알고 있어야 하나 ? => 브릿지 게임 클래스가 갖자.
 }
 
 const app = new App();

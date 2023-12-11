@@ -10,7 +10,15 @@ class BridgeGame {
 
   #retry;
 
+  #canMove = true;
+
+  #round = 0;
+
   #result = [];
+
+  #isDone = false;
+
+  // 재시도, 성공 여부 리턴
 
   /**
    * 사용자가 칸을 이동할 때 사용하는 메서드
@@ -20,15 +28,27 @@ class BridgeGame {
   constructor(size) {
     this.#size = size;
     this.#bridge = BridgeMaker.makeBridge(this.#size, BridgeRandomNumberGenerator.generate);
+    console.log(this.#bridge);
   }
 
   // return 값에 따라 App에서 실행할 함수 달라져야함.
   // 건널 수 없는 값 입력 => false?
   // 모두 다 건넜다 => true?
-  move(moving, position) {
-    // 배열을 리턴하자.
-    const result = this.#bridge[position] === moving;
-    this.#result.push([moving,result ? 'O' : 'X']);
+  move(moving) {
+    const result = this.#bridge[this.#round] === moving;
+
+    this.#result.push([moving, result ? 'O' : 'X']);
+
+    this.#canMove = result;
+
+    this.#round += 1;
+
+    if (this.#round === this.#bridge.length) {
+      this.#isDone = true;
+    }
+  }
+
+  getResult() {
     return [...this.#result];
   }
 
@@ -39,7 +59,22 @@ class BridgeGame {
    */
   // 재시도 값도 상태로 가지고 있어야 함
   // 재시도 할 때는 다리 재사용
-  retry() {}
+  retry() {
+    this.#retry += 1;
+    this.#result = [];
+  }
+
+  getRetry() {
+    return this.#retry;
+  }
+
+  isDone() {
+    return this.#isDone;
+  }
+
+  canMove() {
+    return this.#canMove;
+  }
 }
 
 export default BridgeGame;

@@ -15,18 +15,20 @@ const OutputView = {
    * <p>
    * 출력을 위해 필요한 메서드의 인자(parameter)는 자유롭게 추가하거나 변경할 수 있다.
    */
-  // result.map(([moving, canMove]) => `dl${moving},${canMove}`)
-  printMap(result) {
+
+  // TODO: 좀 더 간결하게 만들기
+  printMap(movingLog) {
+    const result = ([moving, canMove], position) =>
+      moving === position && canMove === 'O'
+        ? ' O '
+        : moving === position && canMove === 'X'
+          ? ' X '
+          : '   ';
+
     Console.print(
-      `[${result
-        .map(([moving, canMove]) =>
-          moving === 'U' && canMove === 'O' ? 'O' : moving === 'U' && canMove === 'O' ? 'X' : ' ',
-        )
-        .join('')}]\n[${result
-        .map(([moving, canMove]) =>
-          moving === 'D' && canMove === 'O' ? 'O' : moving === 'D' && canMove === 'O' ? 'X' : ' ',
-        )
-        .join('')}]`,
+      `[${movingLog.map(moving => result(moving, 'U')).join('|')}]\n[${movingLog
+        .map(moving => result(moving, 'D'))
+        .join('|')}]`,
     );
   },
 
