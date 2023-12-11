@@ -8,7 +8,7 @@ class BridgeGame {
 
   #bridge;
 
-  #retryNumber = 0;
+  #retryNumber = 1;
 
   #canMove = true;
 
@@ -28,7 +28,6 @@ class BridgeGame {
   constructor(size) {
     this.#size = size;
     this.#bridge = BridgeMaker.makeBridge(this.#size, BridgeRandomNumberGenerator.generate);
-    console.log(this.#bridge);
   }
 
   // return 값에 따라 App에서 실행할 함수 달라져야함.

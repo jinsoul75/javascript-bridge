@@ -8,7 +8,7 @@ const InputView = {
    * 다리의 길이를 입력받는다.
    */
   async readBridgeSize() {
-    const answer = await Console.readLineAsync('\n다리의 길이를 입력해주세요.\n');
+    const answer = await Console.readLineAsync('다리 건너기 게임을 시작합니다.\n다리의 길이를 입력해주세요.\n');
     return answer;
   },
 
