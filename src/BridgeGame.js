@@ -8,7 +8,7 @@ class BridgeGame {
 
   #bridge;
 
-  #retry;
+  #retryNumber = 0;
 
   #canMove = true;
 
@@ -60,12 +60,15 @@ class BridgeGame {
   // 재시도 값도 상태로 가지고 있어야 함
   // 재시도 할 때는 다리 재사용
   retry() {
-    this.#retry += 1;
+    this.#retryNumber += 1;
     this.#result = [];
+    this.#isDone = false;
+    this.#canMove = true;
+    this.#round = 0;
   }
 
-  getRetry() {
-    return this.#retry;
+  getRetryNumber() {
+    return this.#retryNumber;
   }
 
   isDone() {
@@ -74,6 +77,10 @@ class BridgeGame {
 
   canMove() {
     return this.#canMove;
+  }
+
+  isSuccess() {
+    return this.#isDone ?? this.#canMove;
   }
 }
 

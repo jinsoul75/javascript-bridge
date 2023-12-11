@@ -9,23 +9,30 @@ class App {
   async play() {
     OutputView.printStart();
 
-    const size = await this.retryHandler(() => this.#getBridgeSize());
+    await this.retryHandler(() => this.#getBridgeSize());
 
-    // const [result, isSuccess, attemptNumber]   =
-    await this.#crossBridge(size);
+    await this.#crossBridge();
 
-    // OutputView.printResult(result, isSuccess, attemptNumber);
+    OutputView.printResult(
+      this.#bridgeGame.getResult(),
+      this.#bridgeGame.isSuccess(),
+      this.#bridgeGame.getRetryNumber(),
+    );
   }
 
+  // TODO: while문 안의 await
   async #crossBridge() {
-    // 다리의 길이만큼 시도했다면 result Return
-    // result가 X라면 InputView Return
     while (!this.#bridgeGame.isDone()) {
       const moving = await this.#getMoving();
 
       this.#bridgeGame.move(moving);
 
       OutputView.printMap(this.#bridgeGame.getResult());
+
+      if (!this.#bridgeGame.canMove()) {
+        await this.retryHandler(() => this.#askRety());
+        break;
+      }
     }
   }
 
@@ -55,11 +62,17 @@ class App {
 
     return moving;
   }
-  // 일단 다리 길이 만큼 반복
-  // 종료 전 map 먼저 print
-  // 실패하는 경우 :  움직일 수 없는 방향 입력시
-  // 결과값 나오는 경우: 다리 길이만큼이 되었을 때
-  // 게임 진행상황은 어디서 알고 있어야 하나 ? => 브릿지 게임 클래스가 갖자.
+
+  async #askRety() {
+    const answer = await InputView.readGameCommand();
+
+    Validator.validateRetry(answer);
+
+    if (answer === 'R') {
+      this.#bridgeGame.retry();
+      return this.#crossBridge();
+    }
+  }
 }
 
 const app = new App();
