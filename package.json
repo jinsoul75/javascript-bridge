@@ -3,11 +3,15 @@
   "version": "1.0.0",
   "description": "우아한테크코스 프리코스 다리 건너기 게임 미션",
   "dependencies": {
-    "@woowacourse/mission-utils": "^1.0.6"
+    "@woowacourse/mission-utils": "^2.1.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.22.20",
+    "babel-jest": "^29.7.0",
     "jest": "^29.0.3"
   },
+  "type": "module",
   "scripts": {
     "test": "jest --detectOpenHandles --watch"
   },
@@ -26,5 +30,15 @@
   "engines": {
     "npm": ">=6.0.0",
     "node": ">=14.0.0"
+  },
+  "jest": {
+    "transform": {
+      "\\.js$": "babel-jest"
+    }
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
   }
 }
